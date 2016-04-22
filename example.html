@@ -14,10 +14,10 @@
         <script type="text/javascript">
             var tables = {
             'people' : [{id:5, name:"joe"},
-            {id:4, name:"ralph"}],
+                        {id:4, name:"ralph"}],
 
             'jobs'   : [{id:4, title:"CEO", salary: 100},
-            {id:3, title:"janitor", salary: 50}]
+                        {id:3, title:"janitor", salary: 50}]
 
             };
 
@@ -25,7 +25,7 @@
             sq = function(x){
             return x*x;
             };
-
+            
             var _q = "SELECT people.name, sq(jobs.salary) AS sal_sq, (jobs.salary > 50 ? true : false) AS over_100 FROM people JOIN jobs ON jobs.id = people.id WHERE jobs.title = 'CEO'";
             
             /*
