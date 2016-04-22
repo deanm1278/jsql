@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>JSQL example</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        <div>
+            Check your console!
+        </div>
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+        <script src="jsql.js"></script>
+        <script type="text/javascript">
+            var tables = {
+            'people' : [{id:5, name:"joe"},
+            {id:4, name:"ralph"}],
+
+            'jobs'   : [{id:4, title:"CEO", salary: 100},
+            {id:3, title:"janitor", salary: 50}]
+
+            };
+
+            //supports user defined functions
+            sq = function(x){
+            return x*x;
+            };
+
+            var _q = "SELECT people.name, sq(jobs.salary) AS sal_sq, (jobs.salary > 50 ? true : false) AS over_100 FROM people JOIN jobs ON jobs.id = people.id WHERE jobs.title = 'CEO'";
+            
+            /*
+           WILL RETURN:
+           array of length one:
+
+           [{ 	over_100:       true,
+               people.name: 	"ralph",
+               sal_sq:             10000   }]
+           */
+            
+            console.log(jsql(_q, tables));
+        </script>
+    </body>
+</html>
