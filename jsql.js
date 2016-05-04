@@ -294,6 +294,36 @@ function jsql_process(row, aliases, tbls, r_new) {
     }
 }
 
+//make sure there are no syntax errors
+var testcombine = function(ar){
+    var ret = [];
+    for(var j = 0; j<ar.length; j++){
+        try {
+            eval(ar[j].match(/(.*?)(?=\sAS\s|$)/i)[0].trim());
+            ret.push(ar[j]);
+        } catch (e) {
+            if (e instanceof SyntaxError) {
+                var n = [];
+                if(j + 1 in ar){
+                  n.push(ar[j] + ',' + ar[j + 1]);
+                  if(j + 2 in ar){
+                    n = n.concat(ar.slice(j + 2));
+                  }
+                  ret = ret.concat(testcombine(n));
+                  break;
+                }
+                else{
+                    throw "you have a syntax error near: " + ar[j];
+                }
+            }
+            else{
+              ret.push(ar[j]);
+            }
+        }
+    }
+    return ret;
+}
+
 function jsql_select(query, dependencies) {
     //first lets build the full dataset
     var ret_tbl = [];
@@ -312,9 +342,10 @@ function jsql_select(query, dependencies) {
         return [];
     }
     else {
-        q = query.match(/SELECT\s(.*)(?=\sFROM)/i)[1];
-        //split out columns to get
-        var cols = q.split(",");
+        var q = query.match(/SELECT\s(.*)(?=\sFROM)/i)[1];
+        
+        var cols = q.split(",");//split by commas that are not escaped
+        cols = testcombine(cols); //check for syntax errors and make sure we are not messing up anyones query
         var aliases = [];
         var tbls = (group ? Object.keys(tmp[0][0]) : Object.keys(tmp[0]));
         for (var c in cols) {
