@@ -299,7 +299,9 @@ var testcombine = function(ar){
     var ret = [];
     for(var j = 0; j<ar.length; j++){
         try {
-            eval(ar[j].match(/(.*?)(?=\sAS\s|$)/i)[0].trim());
+            if(ar[j] != '*'){
+            	eval(ar[j].match(/(.*?)(?=\sAS\s|$)/i)[0].replace(/(\w\.\*)/g,'').trim());
+            }
             ret.push(ar[j]);
         } catch (e) {
             if (e instanceof SyntaxError) {
