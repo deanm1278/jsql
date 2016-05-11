@@ -56,8 +56,8 @@ function jsql_replace_conditionals(query) {
 
 function jsql_replace_table_names(query, tbls, prefix) {
     for (var i in tbls) {
-        var re = new RegExp("\(?!\\w" + tbls[i] + ")(" + tbls[i] + ")(?=\\.)", "g");
-        query = query.replace(re, " " + prefix + ".$1");
+        var re = new RegExp("(^|[^\\w\\.])(" + tbls[i] + ")(?=\\.)", "g");
+        query = query.replace(re, " $1" + prefix + ".$2");
     }
     return query;
 }
